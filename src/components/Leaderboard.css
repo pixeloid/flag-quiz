@@ -1,0 +1,146 @@
+.leaderboard {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.leaderboard h2 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.leaderboard-subtitle {
+  font-size: 1rem;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.no-scores {
+  background: rgba(255, 255, 255, 0.95);
+  color: #667eea;
+  padding: 40px;
+  border-radius: 20px;
+  font-size: 1.2rem;
+}
+
+.no-scores p {
+  margin: 10px 0;
+}
+
+.scores-table {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.table-header,
+.table-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 100px 180px;
+  padding: 15px 20px;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.table-row {
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row:hover {
+  background-color: rgba(102, 126, 234, 0.1);
+}
+
+.table-row.top-three {
+  font-weight: bold;
+}
+
+.table-row.first-place {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 255, 255, 0.95) 50%);
+}
+
+.rank-col {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.name-col {
+  font-size: 1.1rem;
+}
+
+.moves-col {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.date-col {
+  text-align: right;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.clear-button {
+  margin-top: 20px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.clear-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: #c0392b;
+}
+
+.clear-button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .leaderboard h2 {
+    font-size: 2rem;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 60px 1fr 70px;
+    padding: 12px 15px;
+    font-size: 0.9rem;
+  }
+
+  .date-col {
+    display: none;
+  }
+
+  .rank-col {
+    font-size: 1rem;
+  }
+
+  .name-col,
+  .moves-col {
+    font-size: 1rem;
+  }
+}
