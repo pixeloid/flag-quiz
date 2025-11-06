@@ -68,10 +68,12 @@ flag-quiz/
 
 ### Leaderboard Component (Leaderboard.jsx)
 
-- **Score Display**: Shows top 10 scores sorted by fewest moves
+- **Score Display**: Shows top 10 scores sorted by moves (then by time as tiebreaker)
 - **LocalStorage**: Reads from `flagGameScores` key
-- **Formatting**: Displays rank, player name, moves, and timestamp in Hungarian format
+- **Formatting**: Displays rank, player name, moves, time (with mode icon), and timestamp in Hungarian format
 - **Medal System**: Shows 🥇🥈🥉 for top 3 players
+- **Game Mode Icons**: ⏱️ for stopwatch, ⏳ for countdown
+- **Time Display**: Formatted as MM:SS with monospace font
 - **Clear Function**: Allows resetting the leaderboard with confirmation
 
 ### Country Data (countries.js)
@@ -90,16 +92,26 @@ Format: `{ code: 'ISO-CODE', name: 'Magyar Név' }`
 
 ### Player Experience
 - **Name Input**: Players enter their name before starting (defaults to "Miron")
+- **Game Mode Selection**: Choose between Stopwatch or Countdown mode
+- **Time Limit Selection**: For countdown mode, choose from 1, 1.5, 2, 3, 4, or 5 minutes
 - **Move Tracking**: Counts every pair of cards flipped
-- **Live Stats**: Displays player name, moves, and matched pairs during gameplay
-- **Win Screen**: Shows completion message with final score
+- **Time Tracking**: Live timer display with MM:SS format
+- **Live Stats**: Displays player name, moves, time, and matched pairs during gameplay
+- **Win Screen**: Shows completion message with final moves and time
+- **Timeout Screen**: For countdown mode, shows failure message if time expires
 - **Leaderboard**: Toggle between game and top 10 scores
 
 ### Data Persistence
 - **localStorage Key**: `flagGameScores`
-- **Score Format**: `{ name: string, moves: number, date: ISO string }`
-- **Sorting**: Ascending by moves (fewer is better)
+- **Score Format**: `{ name: string, moves: number, time: number, gameMode: string, timeLimit: number|null, date: ISO string }`
+- **Sorting**: Ascending by moves (fewer is better), with time as tiebreaker
 - **Limit**: Top 10 scores retained
+
+### Visual Features
+- **Warning Animation**: Timer pulses red when countdown reaches 10 seconds or less
+- **Win Modal**: Full-screen overlay with game statistics
+- **Game Over Modal**: Displayed when countdown expires before completion
+- **Footer**: "Made with ❤️ by LiviLove" at bottom of page
 
 ## Adding New Countries
 
