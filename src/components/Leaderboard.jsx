@@ -27,11 +27,21 @@ function Leaderboard() {
     })
   }
 
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return mins + ':' + (secs < 10 ? '0' : '') + secs
+  }
+
   const getMedalEmoji = (idx) => {
     if (idx === 0) return '🥇'
     if (idx === 1) return '🥈'
     if (idx === 2) return '🥉'
     return (idx + 1) + '.'
+  }
+
+  const getGameModeIcon = (mode) => {
+    return mode === 'countdown' ? '⏳' : '⏱️'
   }
 
   return (
@@ -51,6 +61,7 @@ function Leaderboard() {
               <div className="rank-col">Helyezés</div>
               <div className="name-col">Név</div>
               <div className="moves-col">Lépések</div>
+              <div className="time-col">Idő</div>
               <div className="date-col">Dátum</div>
             </div>
             {scores.map((score, idx) => (
@@ -63,6 +74,9 @@ function Leaderboard() {
                 </div>
                 <div className="name-col">{score.name}</div>
                 <div className="moves-col">{score.moves}</div>
+                <div className="time-col">
+                  {getGameModeIcon(score.gameMode || 'stopwatch')} {formatTime(score.time || 0)}
+                </div>
                 <div className="date-col">{formatDate(score.date)}</div>
               </div>
             ))}

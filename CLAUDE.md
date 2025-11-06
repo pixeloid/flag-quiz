@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Flag Memory Game (Zászló Memória Játék) - An educational memory card game for children to learn world flags paired with Hungarian country names. Features player scoring, move tracking, and a persistent leaderboard. Built with React and Vite. All UI text is in Hungarian.
+Flag Memory Game (Zászló Memória Játék) - An educational memory card game for children to learn world flags paired with Hungarian country names. Features two game modes (stopwatch/countdown timer), move tracking, and a persistent leaderboard with time tracking. Built with React and Vite. All UI text is in Hungarian.
 
 ## Development Commands
 
@@ -49,12 +49,16 @@ flag-quiz/
 ### Game Logic (App.jsx)
 
 - **Player Management**: Collects player name before game starts (default: "Miron")
+- **Game Mode Selection**: Two modes available:
+  - **Stopwatch (⏱️)**: Tracks elapsed time from 0 upwards
+  - **Countdown (⏳)**: Counts down from selectable time limit (1-5 minutes). Game ends when time runs out.
+- **Timer System**: 1-second interval timer with live display. Countdown shows warning animation when ≤10 seconds remain.
 - **Card Generation**: Creates pairs of cards - one showing the flag (SVG), one showing the Hungarian country name
 - **Shuffle Algorithm**: Randomizes card positions on game start
 - **Match Detection**: Compares selected cards by country code and ensures they're different types (flag vs name)
 - **Move Counter**: Increments when two cards are flipped (regardless of match)
-- **Score Persistence**: Saves completed games to localStorage with player name, moves, and timestamp
-- **State Management**: Tracks selected cards, matched pairs, game progress, and player stats
+- **Score Persistence**: Saves completed games to localStorage with player name, moves, time, game mode, and timestamp
+- **State Management**: Tracks selected cards, matched pairs, game progress, player stats, and timer state
 
 ### Card Component (FlagCard.jsx)
 

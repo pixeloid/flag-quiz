@@ -13,6 +13,33 @@ function App() {
   const [playerName, setPlayerName] = useState('Miron')
   const [showNameInput, setShowNameInput] = useState(true)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
+  const [gameMode, setGameMode] = useState('stopwatch') // 'stopwatch' or 'countdown'
+  const [timeLimit, setTimeLimit] = useState(120) // seconds for countdown mode
+  const [elapsedTime, setElapsedTime] = useState(0) // seconds elapsed
+  const [timerActive, setTimerActive] = useState(false)
+  const [gameOver, setGameOver] = useState(false)
+
+  // Timer effect
+  useEffect(() => {
+    let interval = null
+    if (timerActive && !gameOver) {
+      interval = setInterval(() => {
+        setElapsedTime(prev => {
+          if (gameMode === 'countdown') {
+            const remaining = timeLimit - prev - 1
+            if (remaining <= 0) {
+              setGameOver(true)
+              setTimerActive(false)
+              return timeLimit
+            }
+            return prev + 1
+          }
+          return prev + 1
+        })
+      }, 1000)
+    }
+    return () => clearInterval(interval)
+  }, [timerActive, gameOver, gameMode, timeLimit])
 
   const startGame = () => {
     if (!playerName.trim()) {
@@ -45,12 +72,15 @@ function App() {
     setSelectedCards([])
     setMatchedPairs([])
     setMoves(0)
+    setElapsedTime(0)
+    setTimerActive(true)
+    setGameOver(false)
     setGameStarted(true)
     setShowNameInput(false)
   }
 
   const handleCardClick = (card) => {
-    if (selectedCards.length === 2 ||
+    if (gameOver || selectedCards.length === 2 ||
         selectedCards.find(c => c.id === card.id) ||
         matchedPairs.includes(card.countryCode)) {
       return
@@ -80,20 +110,43 @@ function App() {
            matchedPairs.includes(card.countryCode)
   }
 
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return mins + ':' + (secs < 10 ? '0' : '') + secs
+  }
+
+  const getTimeRemaining = () => {
+    if (gameMode === 'countdown') {
+      return Math.max(0, timeLimit - elapsedTime)
+    }
+    return elapsedTime
+  }
+
   const saveScore = () => {
     const scores = JSON.parse(localStorage.getItem('flagGameScores') || '[]')
     const newScore = {
       name: playerName,
       moves: moves,
+      time: elapsedTime,
+      gameMode: gameMode,
+      timeLimit: gameMode === 'countdown' ? timeLimit : null,
       date: new Date().toISOString()
     }
     scores.push(newScore)
-    scores.sort((a, b) => a.moves - b.moves)
+    // Sort by moves first, then by time
+    scores.sort((a, b) => {
+      if (a.moves === b.moves) {
+        return a.time - b.time
+      }
+      return a.moves - b.moves
+    })
     localStorage.setItem('flagGameScores', JSON.stringify(scores.slice(0, 10)))
   }
 
   useEffect(() => {
     if (matchedPairs.length === countries.length && matchedPairs.length > 0) {
+      setTimerActive(false)
       saveScore()
     }
   }, [matchedPairs])
@@ -105,6 +158,9 @@ function App() {
     setSelectedCards([])
     setMatchedPairs([])
     setMoves(0)
+    setElapsedTime(0)
+    setTimerActive(false)
+    setGameOver(false)
   }
 
   return (
@@ -134,6 +190,43 @@ function App() {
                 placeholder="Add meg a neved"
                 maxLength={20}
               />
+
+              <div className="game-mode-selector">
+                <label>Játék mód:</label>
+                <div className="mode-buttons">
+                  <button
+                    className={'mode-btn' + (gameMode === 'stopwatch' ? ' active' : '')}
+                    onClick={() => setGameMode('stopwatch')}
+                  >
+                    ⏱️ Stopper
+                  </button>
+                  <button
+                    className={'mode-btn' + (gameMode === 'countdown' ? ' active' : '')}
+                    onClick={() => setGameMode('countdown')}
+                  >
+                    ⏳ Visszaszámláló
+                  </button>
+                </div>
+              </div>
+
+              {gameMode === 'countdown' && (
+                <div className="time-limit-selector">
+                  <label htmlFor="timeLimit">Időkorlát:</label>
+                  <select
+                    id="timeLimit"
+                    value={timeLimit}
+                    onChange={(e) => setTimeLimit(Number(e.target.value))}
+                  >
+                    <option value={60}>1 perc</option>
+                    <option value={90}>1.5 perc</option>
+                    <option value={120}>2 perc</option>
+                    <option value={180}>3 perc</option>
+                    <option value={240}>4 perc</option>
+                    <option value={300}>5 perc</option>
+                  </select>
+                </div>
+              )}
+
               <button className="start-button" onClick={startGame}>
                 Játék indítása
               </button>
@@ -149,28 +242,57 @@ function App() {
                   <span className="label">Lépések:</span>
                   <span className="value">{moves}</span>
                 </div>
+                <div className={'info-item timer-item' + (gameMode === 'countdown' && getTimeRemaining() <= 10 ? ' warning' : '')}>
+                  <span className="label">
+                    {gameMode === 'countdown' ? '⏳ Hátralévő idő:' : '⏱️ Eltelt idő:'}
+                  </span>
+                  <span className="value timer-value">{formatTime(getTimeRemaining())}</span>
+                </div>
                 <div className="info-item">
                   <span className="label">Talált párok:</span>
                   <span className="value">{matchedPairs.length} / {countries.length}</span>
                 </div>
               </div>
 
-              {matchedPairs.length === countries.length && matchedPairs.length > 0 && (
+              {(matchedPairs.length === countries.length && matchedPairs.length > 0) && (
                 <div className="win-message">
                   <div className="win-content">
                     🎉 Gratulálok, {playerName}! 🎉
                     <div className="win-stats">
                       Teljesítetted {moves} lépésből!
+                      <br />
+                      Idő: {formatTime(elapsedTime)}
                     </div>
                     <div className="win-buttons">
                       <button className="start-button" onClick={startGame}>
                         Új játék
                       </button>
                       <button className="secondary-button" onClick={resetGame}>
-                        Név megváltoztatása
+                        Beállítások módosítása
                       </button>
                       <button className="secondary-button" onClick={() => setShowLeaderboard(true)}>
                         Toplista megtekintése
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {gameOver && matchedPairs.length < countries.length && (
+                <div className="win-message">
+                  <div className="win-content game-over">
+                    ⏰ Lejárt az idő! ⏰
+                    <div className="win-stats">
+                      Sajnos nem sikerült időben befejezni.
+                      <br />
+                      Talált párok: {matchedPairs.length} / {countries.length}
+                    </div>
+                    <div className="win-buttons">
+                      <button className="start-button" onClick={startGame}>
+                        Új játék
+                      </button>
+                      <button className="secondary-button" onClick={resetGame}>
+                        Beállítások módosítása
                       </button>
                     </div>
                   </div>
@@ -191,6 +313,10 @@ function App() {
           )}
         </>
       )}
+
+      <footer className="app-footer">
+        Made with ❤️ by LiviLove
+      </footer>
     </div>
   )
 }

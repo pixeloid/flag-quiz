@@ -38,7 +38,7 @@
 .table-header,
 .table-row {
   display: grid;
-  grid-template-columns: 100px 1fr 100px 180px;
+  grid-template-columns: 80px 1fr 80px 100px 140px;
   padding: 15px 20px;
   align-items: center;
   gap: 10px;
@@ -89,9 +89,16 @@
   color: #667eea;
 }
 
+.time-col {
+  text-align: center;
+  font-size: 1rem;
+  font-family: 'Courier New', monospace;
+  color: #764ba2;
+}
+
 .date-col {
   text-align: right;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0.7;
 }
 
@@ -126,12 +133,14 @@
 
   .table-header,
   .table-row {
-    grid-template-columns: 60px 1fr 70px;
-    padding: 12px 15px;
-    font-size: 0.9rem;
+    grid-template-columns: 50px 1fr 60px 80px;
+    padding: 12px 10px;
+    font-size: 0.85rem;
+    gap: 5px;
   }
 
-  .date-col {
+  .date-col,
+  .time-col {
     display: none;
   }
 
@@ -141,6 +150,6 @@
 
   .name-col,
   .moves-col {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 }
