@@ -159,12 +159,11 @@ function App() {
   }
 
   useEffect(() => {
-    const filteredCountriesLength = getFilteredCountries().length
-    if (matchedPairs.length === filteredCountriesLength && matchedPairs.length > 0) {
+    if (matchedPairs.length === PAIRS_COUNT && matchedPairs.length > 0) {
       setTimerActive(false)
       saveScore()
     }
-  }, [matchedPairs, selectedContinent])
+  }, [matchedPairs])
 
   const resetGame = () => {
     setGameStarted(false)
@@ -283,11 +282,11 @@ function App() {
                 </div>
                 <div className="info-item">
                   <span className="label">Talált párok:</span>
-                  <span className="value">{matchedPairs.length} / {getFilteredCountries().length}</span>
+                  <span className="value">{matchedPairs.length} / {PAIRS_COUNT}</span>
                 </div>
               </div>
 
-              {(matchedPairs.length === getFilteredCountries().length && matchedPairs.length > 0) && (
+              {(matchedPairs.length === PAIRS_COUNT && matchedPairs.length > 0) && (
                 <div className="win-message">
                   <div className="win-content">
                     🎉 Gratulálok, {playerName}! 🎉
@@ -311,14 +310,14 @@ function App() {
                 </div>
               )}
 
-              {gameOver && matchedPairs.length < getFilteredCountries().length && (
+              {gameOver && matchedPairs.length < PAIRS_COUNT && (
                 <div className="win-message">
                   <div className="win-content game-over">
                     ⏰ Lejárt az idő! ⏰
                     <div className="win-stats">
                       Sajnos nem sikerült időben befejezni.
                       <br />
-                      Talált párok: {matchedPairs.length} / {getFilteredCountries().length}
+                      Talált párok: {matchedPairs.length} / {PAIRS_COUNT}
                     </div>
                     <div className="win-buttons">
                       <button className="start-button" onClick={startGame}>
