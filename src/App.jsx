@@ -42,6 +42,8 @@ function App() {
     return () => clearInterval(interval)
   }, [timerActive, gameOver, gameMode, timeLimit])
 
+  const PAIRS_COUNT = 18 // 6x6 grid = 36 cards = 18 pairs
+
   const getFilteredCountries = () => {
     return countries.filter(country => country.continent === selectedContinent)
   }
@@ -55,9 +57,13 @@ function App() {
     // Get countries from selected continent
     const filteredCountries = getFilteredCountries()
 
+    // Randomly select PAIRS_COUNT countries from the filtered list
+    const shuffledCountries = [...filteredCountries].sort(() => Math.random() - 0.5)
+    const selectedCountries = shuffledCountries.slice(0, PAIRS_COUNT)
+
     // Create pairs: one with flag, one with country name
     const gamePairs = []
-    filteredCountries.forEach((country, index) => {
+    selectedCountries.forEach((country, index) => {
       gamePairs.push({
         id: index * 2,
         countryCode: country.code,
