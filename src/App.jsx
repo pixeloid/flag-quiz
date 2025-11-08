@@ -8,7 +8,6 @@ function App() {
   const [selectedCards, setSelectedCards] = useState([])
   const [matchedPairs, setMatchedPairs] = useState([])
   const [cards, setCards] = useState([])
-  const [gameStarted, setGameStarted] = useState(false)
   const [moves, setMoves] = useState(0)
   const [playerName, setPlayerName] = useState('Miron')
   const [showNameInput, setShowNameInput] = useState(true)
@@ -89,7 +88,6 @@ function App() {
     setElapsedTime(0)
     setTimerActive(true)
     setGameOver(false)
-    setGameStarted(true)
     setShowNameInput(false)
   }
 
@@ -166,7 +164,6 @@ function App() {
   }, [matchedPairs])
 
   const resetGame = () => {
-    setGameStarted(false)
     setShowNameInput(true)
     setCards([])
     setSelectedCards([])
@@ -219,7 +216,7 @@ function App() {
                   ))}
                 </select>
                 <div className="continent-info">
-                  {getFilteredCountries().length} ország
+                  18 véletlenszerű ország ebből a kontinensből
                 </div>
               </div>
 
