@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import FlagCard from './components/FlagCard'
 import Leaderboard from './components/Leaderboard'
-import { countries } from './data/countries'
+import { countries, continents } from './data/countries'
 
 function App() {
   const [selectedCards, setSelectedCards] = useState([])
@@ -18,6 +18,7 @@ function App() {
   const [elapsedTime, setElapsedTime] = useState(0) // seconds elapsed
   const [timerActive, setTimerActive] = useState(false)
   const [gameOver, setGameOver] = useState(false)
+  const [selectedContinent, setSelectedContinent] = useState('europe') // default continent
 
   // Timer effect
   useEffect(() => {
@@ -41,15 +42,22 @@ function App() {
     return () => clearInterval(interval)
   }, [timerActive, gameOver, gameMode, timeLimit])
 
+  const getFilteredCountries = () => {
+    return countries.filter(country => country.continent === selectedContinent)
+  }
+
   const startGame = () => {
     if (!playerName.trim()) {
       alert('Kérlek, add meg a neved!')
       return
     }
 
+    // Get countries from selected continent
+    const filteredCountries = getFilteredCountries()
+
     // Create pairs: one with flag, one with country name
     const gamePairs = []
-    countries.forEach((country, index) => {
+    filteredCountries.forEach((country, index) => {
       gamePairs.push({
         id: index * 2,
         countryCode: country.code,
@@ -145,11 +153,12 @@ function App() {
   }
 
   useEffect(() => {
-    if (matchedPairs.length === countries.length && matchedPairs.length > 0) {
+    const filteredCountriesLength = getFilteredCountries().length
+    if (matchedPairs.length === filteredCountriesLength && matchedPairs.length > 0) {
       setTimerActive(false)
       saveScore()
     }
-  }, [matchedPairs])
+  }, [matchedPairs, selectedContinent])
 
   const resetGame = () => {
     setGameStarted(false)
@@ -190,6 +199,24 @@ function App() {
                 placeholder="Add meg a neved"
                 maxLength={20}
               />
+
+              <div className="continent-selector">
+                <label htmlFor="continent">Kontinens:</label>
+                <select
+                  id="continent"
+                  value={selectedContinent}
+                  onChange={(e) => setSelectedContinent(e.target.value)}
+                >
+                  {continents.map(continent => (
+                    <option key={continent.id} value={continent.id}>
+                      {continent.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="continent-info">
+                  {getFilteredCountries().length} ország
+                </div>
+              </div>
 
               <div className="game-mode-selector">
                 <label>Játék mód:</label>
@@ -250,11 +277,11 @@ function App() {
                 </div>
                 <div className="info-item">
                   <span className="label">Talált párok:</span>
-                  <span className="value">{matchedPairs.length} / {countries.length}</span>
+                  <span className="value">{matchedPairs.length} / {getFilteredCountries().length}</span>
                 </div>
               </div>
 
-              {(matchedPairs.length === countries.length && matchedPairs.length > 0) && (
+              {(matchedPairs.length === getFilteredCountries().length && matchedPairs.length > 0) && (
                 <div className="win-message">
                   <div className="win-content">
                     🎉 Gratulálok, {playerName}! 🎉
@@ -278,14 +305,14 @@ function App() {
                 </div>
               )}
 
-              {gameOver && matchedPairs.length < countries.length && (
+              {gameOver && matchedPairs.length < getFilteredCountries().length && (
                 <div className="win-message">
                   <div className="win-content game-over">
                     ⏰ Lejárt az idő! ⏰
                     <div className="win-stats">
                       Sajnos nem sikerült időben befejezni.
                       <br />
-                      Talált párok: {matchedPairs.length} / {countries.length}
+                      Talált párok: {matchedPairs.length} / {getFilteredCountries().length}
                     </div>
                     <div className="win-buttons">
                       <button className="start-button" onClick={startGame}>
